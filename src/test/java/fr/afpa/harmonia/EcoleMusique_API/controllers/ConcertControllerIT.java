@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class ConcertControllerIntegrationTest {
+class ConcertControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
