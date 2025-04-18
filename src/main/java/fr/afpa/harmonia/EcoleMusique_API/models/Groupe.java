@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 // création de la table groupe dans la base de données grâce aux annotations Data, Entity, Column, Id, etc
+//Test
 
 @Data
 @Entity
