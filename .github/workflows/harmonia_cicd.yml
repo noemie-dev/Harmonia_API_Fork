@@ -43,3 +43,9 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 		  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=noemie-dev_Harmonia_API_Fork
+      - name: Charging artefact
+      	uses: actions/upload-artifact@v4
+       with:
+       	name: package.jar
+	path: target/*.jar
+	retention-days: 1
