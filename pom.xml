@@ -28,11 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<sonar.organization>noemie-dev</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
-	<properties>
- 		<sonar.organization>noemie-dev</sonar.organization>
-  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
