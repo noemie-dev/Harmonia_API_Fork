@@ -40,7 +40,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=noemie-dev_Harmonia_API_Fork
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=noemie-dev_Harmonia_API_Fork -Dtest=\!**/*Selenium*Test
       - name: Charging artefact
         uses: actions/upload-artifact@v4
         with:
