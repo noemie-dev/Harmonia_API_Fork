@@ -7,7 +7,7 @@ EXPOSE 9000
 WORKDIR /app
 
 #Copie du fichier JAR récupéré de l'artefact de GitHub Actions dans le conteneur
-COPY package.jar /app/package.jar
+COPY EcoleMusique_API-0.0.1-SNAPSHOT.jar /app/EcoleMusique_API-0.0.1-SNAPSHOT.jar
 
 # Commande pour executer le fichier jar
- CMD ["java", "-jar", "package.jar"]
+ CMD ["java", "-jar", "EcoleMusique_API-0.0.1-SNAPSHOT.jar"]
