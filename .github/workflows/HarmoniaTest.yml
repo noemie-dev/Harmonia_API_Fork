@@ -80,7 +80,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USER }}/Harmonia_API-Fork:latest
+          tags: ${{ secrets.DOCKERHUB_USER }}/harmonia:latest
 
     # message de fin indiquant que tout s'est bien passé
       - run: echo "This job's status is ${{ job.status }}."
