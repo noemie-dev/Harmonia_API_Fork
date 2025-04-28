@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 28, 2025 at 10:01 AM
+-- Generation Time: Apr 28, 2025 at 11:00 AM
 -- Server version: 9.2.0
 -- PHP Version: 8.1.10
 
@@ -20,13 +20,14 @@ SET time_zone = "+00:00";
 --
 -- Database: `harmonia`
 --
+CREATE DATABASE IF NOT EXISTS `harmonia` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE `harmonia`;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `concert`
 --
-USE harmonia;
 
 CREATE TABLE `concert` (
   `id_concert` bigint NOT NULL,
