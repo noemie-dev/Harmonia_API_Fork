@@ -37,4 +37,3 @@ build/
 /sonar.bat
 
 ### Configuration ###
-/src/main/resources/application.properties
