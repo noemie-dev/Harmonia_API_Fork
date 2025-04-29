@@ -1,7 +1,7 @@
 FROM openjdk:21
 
 #exposer le port
-EXPOSE 9000
+EXPOSE 8082
 
 #Repertoire de travail dans le conteneur pour stocker le jar
 WORKDIR /app
