@@ -1,38 +1,52 @@
+# on nomme le workflow tel qu'il va apparaitre dans le dépot GitHub
 name: CICD Api
+# on spécifie sur quelle action de git le workflow se déclenche.
+# ici, c'est lorsqu'on push du code sur notre branche ci/cd, ou lorsqu"on fait une pull request
 on:
   push:
     branches:
       - ci-cd
   pull_request:
     types: [opened, synchronize, reopened]
-jobs:
+# on définit les travaux, ou jobs, les grandes étapes de notre workflow, qui apparaitront dans GitHub Actions.
+jobs: # le premier job est le build du projet
   build:
+    # on nomme le premier job Build and analyze : construire et tester le projet
     name: Build and analyze
+    # on configure sur quoi il tourne, on installe les composants dont il a besoin pour construire le projet.
+    # ici on le fait tourner sur Ubuntu, la machine virtuelle par défaut de GitHub Actions
     runs-on: ubuntu-latest
-    steps:
+    # les étapes et actions du job
+    steps: # on copie et verifie le code qui est dans notre repository sur gitHub avec l'action checkout
       - name: Checkout repository
         uses: actions/checkout@v4
+       # On installe le jdk21
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'zulu' # Alternative distribution options are available.
+          # on installe mysql
       - name: Start MySql
         run: sudo service mysql start
+        # on lui donne le script de notre base de données pour qu'il la recrée dans l'environnement
       - name: Create Database from script
         run: mysql -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }} -e "source infra/mysql/dump/harmonia.sql"
+        # on test le code avec SonarQube
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+          # on installe Maven
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+          # on se connecte à notre base de données en MySql
       - name: Build and analyze
         env:
           DB_HOST: localhost
@@ -41,6 +55,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=noemie-dev_Harmonia_API_Fork -Dtest=\!**/*Selenium*Test
+        # on charge l'artefact créé par le build de notre appli dans notre dossier target
       - name: Charging artefact
         uses: actions/upload-artifact@v4
         with:
@@ -48,39 +63,43 @@ jobs:
           path: target/*.jar
           retention-days: 1
 
-
+# le second job est le build de l'image avec Docker
   docker-build-image-api:
-    #verifie que le déclenchement provient de la branche ci-cd
+    #verifie que le déclenchement provient bien de la branche ci-cd
     if: ${{ github.ref == 'refs/heads/ci-cd' }}
     runs-on: ubuntu-latest
+    # on dit au workflow qu'il a besoin d'attendre que le job "build" soit bien executé et fini pour se lancer
     needs:
       - build
+      # on récupère et vérifie le code du repository gitHub
     steps:
       - uses: actions/checkout@v4
-
+    # permet l'émulation de la multiplateforme pour le build Docker
       - name: Set Up QEMU
         uses: docker/setup-buildx-action@v3
-
+    # installe le Docker Build
       - name: Set Up Docker Build
         uses: docker/setup-buildx-action@v3
-
+    # on se connecte au Docker Hub avec nos identifiants, passés en variables secrètes dans GitHub Actions
       - name: Connect to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-
+      # on récupere le fichier précedemment généré et stocké par le job build
       - name: Download a single artifact
         uses: actions/download-artifact@v4
         with:
           name: package.jar
 
-    #juste pour le controle
+    #juste pour le controle, liste les fichiers dans le repo, pour vérifier que tout est bien là
       - name: List files in the repository
         run: ls ${{ github.workspace }}
 
     # contruction de l'image docker et push sur dockerHub
+      # utilise le Dockerfile présent à la racine de "context"
+      # ajoute le tag "harmonia:latest" quand il pousse l'image dans le DockerHub
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
